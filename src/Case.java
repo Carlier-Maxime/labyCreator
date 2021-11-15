@@ -2,18 +2,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 
-public class Case extends JPanel {
+public class Case {
     private final Laby laby;
     private boolean isMur;
     private int distance;
     private final int[] location;
+    private Color color;
 
     public Case(Laby laby, int[] location, boolean isMur) {
         this.isMur = isMur;
         this.laby = laby;
         distance = -1;
         this.location = location;
-        setMinimumSize(new Dimension(1,1));
         updateColor();
     }
 
@@ -21,32 +21,17 @@ public class Case extends JPanel {
         this(laby, new int[]{posX, posY}, isMur);
     }
 
-    public void updateColor(boolean draw){
+    public void updateColor(){
         if (distance==-1){
-            setBackground(isMur? Color.BLACK : Color.WHITE);
+            color = (isMur? Color.BLACK : Color.WHITE);
         } else if (distance == -2){
-            setBackground(Color.BLUE);
+            color = (Color.BLUE);
         } else {
             int max = laby.getMaxDistance();
-            setBackground(new Color((distance*255)/max,255-((distance*255)/max),0));
-        }
-        if (draw) {
-            try {
-                Thread t = new Thread(() -> {
-                    repaint();
-                    revalidate();
-                });
-                t.start();
-                t.join();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+            color = (new Color((distance*255)/max,255-((distance*255)/max),0));
         }
     }
 
-    public void updateColor(){
-        updateColor(true);
-    }
     public void setIsMur(boolean isMur){
         this.isMur = isMur;
         updateColor();
@@ -56,13 +41,9 @@ public class Case extends JPanel {
         return isMur;
     }
 
-    public void setDistance(int distance, boolean draw) {
+    public void setDistance(int distance) {
         this.distance = distance;
-        updateColor(draw);
-    }
-
-    public void setDistance(int distance){
-        setDistance(distance,true);
+        updateColor();
     }
 
     public int getDistance() {
@@ -71,6 +52,10 @@ public class Case extends JPanel {
 
     public int[] getPosition() {
         return location;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     @Override

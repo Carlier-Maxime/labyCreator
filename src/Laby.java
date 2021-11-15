@@ -1,9 +1,10 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 public class Laby {
-    private View view;
+    private LabyView view;
     private final Random rng;
     private ArrayList<ArrayList<Case>> array;
     private ArrayList<Case> walls;
@@ -11,15 +12,15 @@ public class Laby {
     private int maxDistance;
     private int[] size;
 
-    public Laby(View view, int w, int h) {
+    public Laby(LabyView view, int w, int h) {
         this.view = view;
         rng = new Random();
         maxDistance = 1;
         size = new int[]{w,h};
-        createLaby(w,h,false);
+        //createLaby(w,h);
     }
 
-    public Laby(View view) {
+    public Laby(LabyView view) {
         this(view, 25, 25);
     }
 
@@ -35,7 +36,7 @@ public class Laby {
     1 0 1 0 1 0 0
     1 1 1 1 1 1 1
      */
-    public void initArray(int w, int h, boolean draw){
+    public void initArray(int w, int h){
         if (w%2==0){
             w++;
         }
@@ -43,20 +44,22 @@ public class Laby {
             h++;
         }
         size = new int[]{w,h};
+        array = null;
+        view.repaint();
         array = new ArrayList<>(h);
+        ArrayList<Case> paints;
 
+        paints = new ArrayList<>();
         for (int i=0; i<h; i++){
             array.add(new ArrayList<>(w));
             for (int j=0; j<w; j++){
-                array.get(i).add(new Case(this, j, i, (i%2==0 || j%2==0) && !(i==1 && j==0 || i==h-2 && j==w-1)));
+                Case caze = new Case(this, j, i, (i%2==0 || j%2==0) && !(i==1 && j==0 || i==h-2 && j==w-1));
+                array.get(i).add(caze);
+                paints.add(caze);
             }
         }
         createPartsOfLaby();
-        if (draw){view.reDrawLaby();}
-    }
-
-    public void initArray(int w, int h){
-        initArray(w,h,true);
+        view.paint();
     }
 
     /*
@@ -108,9 +111,9 @@ public class Laby {
         }
         maxDistance = (partsOfLaby.get(0).size()-1)/2;
         for (Case caze : partsOfLaby.get(0)){
-            caze.setDistance(-1,false);
+            caze.setDistance(-1);
         }
-        view.reDraw();
+        view.paint(partsOfLaby.get(0));
     }
 
     public boolean breakOneMur(){
@@ -146,7 +149,7 @@ public class Laby {
             }
             if (find){
                 interCase.setIsMur(false);
-                interCase.setDistance(caze.getDistance(), false);
+                interCase.setDistance(caze.getDistance());
                 part.add(interCase);
                 for (ArrayList<Case> partBis : partsOfLaby){
                     if (partBis.get(0).getDistance() != case2.getDistance()){
@@ -156,6 +159,7 @@ public class Laby {
                         c.setDistance(caze.getDistance());
                         part.add(c);
                     }
+                    view.paint(partBis);
                     partsOfLaby.remove(partBis);
                     break;
                 }
@@ -168,13 +172,15 @@ public class Laby {
     private int[] getDirection(int n){
         int[] direction;
         switch (n) {
-            case 0 : direction = new int[]{0, -1};break;
-            case 1 : direction = new int[]{1, 0};break;
-            case 2 : direction = new int[]{0, 1};break;
-            case 3 : direction = new int[]{-1, 0};break;
-            default : {direction = new int[]{0, 0};
+            case 0 -> direction = new int[]{0, -1};
+            case 1 -> direction = new int[]{1, 0};
+            case 2 -> direction = new int[]{0, 1};
+            case 3 -> direction = new int[]{-1, 0};
+            default -> {
+                direction = new int[]{0, 0};
                 System.out.println("Problem de construction du labyrinthe ! (switch du random direction)");
-                System.exit(1);}
+                System.exit(1);
+            }
         }
         return direction;
     }
@@ -202,18 +208,11 @@ public class Laby {
                 if (pos[0]>0 && pos[1]>0 && pos[0]<getWidth() && pos[1]<getHeight()){
                     Case caze = getCase(pos);
                     if (!caze.isMur() && (path.size()==1 || caze != path.get(path.size()-2))){
-                        if (draw){caze.setDistance(path.size());}
+                        if (draw){caze.setDistance(path.size());view.paint(caze);}
                         ArrayList<Case> path2 = new ArrayList<>(path);
                         path2.add(caze);
                         paths.add(path2);
                         newMaxDist = path2.size()-1;
-                        if (draw){
-                            try {
-                                Thread.sleep(1);
-                            } catch (Exception e){
-                                System.out.println(e.getMessage());
-                            }
-                        }
                     }
                 }
             }
@@ -226,8 +225,9 @@ public class Laby {
         if (find && draw){
             for (Case caze : path){
                 caze.setDistance(-2);
+                view.paint(caze);
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(1);
                 } catch (Exception e){
                     System.out.println(e.getMessage());
                 }
@@ -249,17 +249,13 @@ public class Laby {
         return shortPath;
     }
 
-    public void createLaby(int w, int h, boolean draw){
-        initArray(w,h,draw);
+    public void createLaby(int w, int h){
+        initArray(w,h);
         allPartsInOne();
     }
 
     public ArrayList<ArrayList<Case>> getPartsOfLaby() {
         return partsOfLaby;
-    }
-
-    public void createLaby(int w, int h){
-        createLaby(w,h,true);
     }
 
     public int getWidth(){
@@ -268,6 +264,10 @@ public class Laby {
 
     public int getHeight(){
         return size[1];
+    }
+
+    public boolean arrayIsNull(){
+        return array==null;
     }
 
     public Case getCase(int x, int y){

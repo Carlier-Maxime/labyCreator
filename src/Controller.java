@@ -1,13 +1,12 @@
-import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class Controller implements KeyListener {
     private final Laby laby;
-    private final View view;
+    private final LabyView view;
     private Thread thread;
 
-    public Controller(Laby laby, View view) {
+    public Controller(Laby laby, LabyView view) {
         this.laby = laby;
         this.view = view;
         thread = null;
@@ -24,16 +23,20 @@ public class Controller implements KeyListener {
             return;
         }
         if (e.getKeyCode() == KeyEvent.VK_C){
-            new SizeView(view, laby);
+            new SizeView(view.getJFrame(), laby);
         } else if (e.getKeyCode() == KeyEvent.VK_I){
-            laby.initArray(271,201);
+            laby.initArray(25,25);
         } else if (e.getKeyCode() == KeyEvent.VK_B){
             if(!laby.breakOneMur()){
                 laby.allPartsInOne();
-            };
+            }
         } else if (e.getKeyCode() == KeyEvent.VK_R){
             thread = new Thread(laby::resolve);
             thread.start();
+        } else if (e.getKeyCode() == KeyEvent.VK_P){
+            view.repaint();
+        } else if (e.getKeyCode() == KeyEvent.VK_S){
+            System.out.println("NONE ACTION");
         }
     }
 
