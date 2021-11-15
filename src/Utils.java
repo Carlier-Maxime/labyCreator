@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class RepartitionTest {
+public class Utils {
     public static int[] repartition(int longeur, int nbCase){
         int[] tab = new int[nbCase];
         for (int i=0; i<nbCase; i++){
@@ -32,6 +32,7 @@ public class RepartitionTest {
         }
         return tab;
     }
+
     public static void main(String[] args) {
         Scanner scnr = new Scanner(System.in);
         System.out.print("Longueur dispo : ");
@@ -45,7 +46,7 @@ public class RepartitionTest {
         for (int i=1; i<1400; i++){
             repartition(1400,i);
         }
-        int[] tab = RepartitionTest.repartition(longeur,nbCase);
+        int[] tab = repartition(longeur,nbCase);
         System.out.println(Arrays.toString(tab));
         int s=0;
         for (int n : tab){

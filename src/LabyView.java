@@ -41,21 +41,31 @@ public class LabyView extends JPanel {
     public void paintComponents(Graphics g) {
         super.paintComponents(g);
         if (laby != null && !laby.arrayIsNull()){
-            int sizeX = getWidth()/laby.getWidth();
-            int sizeY = getHeight()/ laby.getHeight();
             if (repaint){
+                int[] sizeX = Utils.repartition(getWidth(), laby.getWidth());
+                int[] sizeY = Utils.repartition(getHeight(), laby.getHeight());
+                int posX = 0;
                 for (int x=0; x<laby.getWidth(); x++){
+                    int posY = 0;
                     for (int y=0; y<laby.getHeight(); y++){
                         Case caze = laby.getCase(x,y);
+                        caze.setSize(new int[]{sizeX[x], sizeY[y]});
+                        caze.setDrawPos(new int[]{posX, posY});
                         g.setColor(caze.getColor());
-                        g.fillRect(x*sizeX, y*sizeY, sizeX, sizeY);
+                        g.fillRect(posX, posY, sizeX[x], sizeY[y]);
+                        posY+=sizeY[y];
+                        System.out.print(caze+" | ");
                     }
+                    System.out.println();
+                    posX+=sizeX[x];
                 }
                 repaint = false;
             } else {
                 for (Case caze : paintCases){
+                    int sizeX = caze.getSize()[0];
+                    int sizeY = caze.getSize()[1];
                     g.setColor(caze.getColor());
-                    g.fillRect(caze.getPosition()[0]*sizeX, caze.getPosition()[1]*sizeY, sizeX, sizeY);
+                    g.fillRect(caze.getDrawPos()[0], caze.getDrawPos()[1], sizeX, sizeY);
                 }
                 paintCases = new ArrayList<>();
             }

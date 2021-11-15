@@ -172,15 +172,14 @@ public class Laby {
     private int[] getDirection(int n){
         int[] direction;
         switch (n) {
-            case 0 -> direction = new int[]{0, -1};
-            case 1 -> direction = new int[]{1, 0};
-            case 2 -> direction = new int[]{0, 1};
-            case 3 -> direction = new int[]{-1, 0};
-            default -> {
+            case 0 : direction = new int[]{0, -1}; break;
+            case 1 : direction = new int[]{1, 0};break;
+            case 2 : direction = new int[]{0, 1};break;
+            case 3 : direction = new int[]{-1, 0};break;
+            default :
                 direction = new int[]{0, 0};
                 System.out.println("Problem de construction du labyrinthe ! (switch du random direction)");
                 System.exit(1);
-            }
         }
         return direction;
     }

@@ -8,6 +8,8 @@ public class Case {
     private int distance;
     private final int[] location;
     private Color color;
+    private int[] size;
+    private int[] drawPos;
 
     public Case(Laby laby, int[] location, boolean isMur) {
         this.isMur = isMur;
@@ -15,6 +17,8 @@ public class Case {
         distance = -1;
         this.location = location;
         updateColor();
+        size = new int[]{1,1};
+        drawPos = new int[]{0,0};
     }
 
     public Case(Laby laby, int posX, int posY, boolean isMur){
@@ -58,12 +62,32 @@ public class Case {
         return color;
     }
 
+    public int[] getSize() {
+        return size;
+    }
+
+    public int[] getDrawPos() {
+        return drawPos;
+    }
+
+    public void setDrawPos(int[] drawPos) {
+        this.drawPos = drawPos;
+    }
+
+    public void setSize(int[] size) {
+        this.size = size;
+    }
+
     @Override
     public String toString() {
         return "Case{" +
-                "isMur=" + isMur +
+                "laby=" + laby +
+                ", isMur=" + isMur +
                 ", distance=" + distance +
                 ", location=" + Arrays.toString(location) +
+                ", color=" + color +
+                ", size=" + Arrays.toString(size) +
+                ", drawPos=" + Arrays.toString(drawPos) +
                 '}';
     }
 }
