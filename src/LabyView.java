@@ -42,6 +42,7 @@ public class LabyView extends JPanel {
         super.paintComponents(g);
         if (laby != null && !laby.arrayIsNull()){
             if (repaint){
+                System.out.println(getWidth()+" "+getHeight());
                 int[] sizeX = Utils.repartition(getWidth(), laby.getWidth());
                 int[] sizeY = Utils.repartition(getHeight(), laby.getHeight());
                 int posX = 0;
@@ -54,9 +55,7 @@ public class LabyView extends JPanel {
                         g.setColor(caze.getColor());
                         g.fillRect(posX, posY, sizeX[x], sizeY[y]);
                         posY+=sizeY[y];
-                        System.out.print(caze+" | ");
                     }
-                    System.out.println();
                     posX+=sizeX[x];
                 }
                 repaint = false;
